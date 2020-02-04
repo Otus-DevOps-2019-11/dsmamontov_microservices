@@ -1,0 +1,23 @@
+REPOSITORY                 TAG                 IMAGE ID            CREATED             SIZE
+mamontov/ubuntu-tmp-file   latest              83efa34931ca        9 seconds ago       124MB
+ubuntu                     16.04               96da9143fb18        2 weeks ago         124MB
+hello-world                latest              fce289e99eb9        13 months ago       1.84kB
+
+у контейнера есть состояние
+
+
+"State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 1987,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2020-02-04T17:41:21.569916829Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+
+настройки сети NetworkSettings и маунпоинты
