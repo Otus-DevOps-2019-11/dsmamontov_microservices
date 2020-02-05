@@ -1,0 +1,9 @@
+plugin: gcp_compute
+projects:
+  - docker-266910
+zones:
+  - "europe-west1-b"
+filters: []
+#  - labels.env = docker
+auth_kind: serviceaccount
+service_account_file: "docker-266910-4e5546969985.json"
