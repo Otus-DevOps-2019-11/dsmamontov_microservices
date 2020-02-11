@@ -1,0 +1,44 @@
+version: '3.3'
+services:
+  post_db:
+    image: mongo:3.2
+    container_name: post_db
+    volumes:
+      - post_db:/data/db
+    networks:
+      - reddit
+  ui:
+    build: ./ui
+    image: ${USERNAME}/ui:${VERSION}
+    container_name: ui
+    entrypoint:
+      - puma
+      - ${UI-ENTRYPOINT}
+    ports:
+      - ${PORT}
+    networks:
+      - reddit
+  post:
+    build: ./post-py
+    image: ${USERNAME}/post:${VERSION}
+    container_name: post
+    entrypoint:
+      - python3
+      - ${POST-ENTRYPOINT}
+    networks:
+      - reddit
+  comment:
+    build: ./comment
+    container_name: comment
+    image: ${USERNAME}/comment:${VERSION}
+    entrypoint:
+      - puma
+      - ${COMMENT-ENTRYPOINT}
+    networks:
+      - reddit
+
+volumes:
+  post_db:
+
+networks:
+  reddit:

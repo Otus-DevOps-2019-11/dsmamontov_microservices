@@ -2,6 +2,11 @@
 dsmamontov microservices repository
 
 
+# docker-4
+
+самый простой способ -- использовать директиву container_name
+
+
 # docker-2
 
 подготовлен докер-образ приложения
