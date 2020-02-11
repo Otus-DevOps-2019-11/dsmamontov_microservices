@@ -13,7 +13,7 @@ services:
     container_name: ui
     entrypoint:
       - puma
-      - ${UI-ENTRYPOINT}
+      - ${UI_ENTRYPOINT}
     ports:
       - ${PORT}
     networks:
@@ -22,9 +22,13 @@ services:
     build: ./post-py
     image: ${USERNAME}/post:${VERSION}
     container_name: post
+    volumes:
+      - ./${POST_ENTRYPOINT}:/app/${POST_ENTRYPOINT}
+#      - ./test.py:/app/test.py
     entrypoint:
       - python3
-      - ${POST-ENTRYPOINT}
+      - ${POST_ENTRYPOINT}
+#      - test.py
     networks:
       - reddit
   comment:
@@ -33,7 +37,7 @@ services:
     image: ${USERNAME}/comment:${VERSION}
     entrypoint:
       - puma
-      - ${COMMENT-ENTRYPOINT}
+      - ${COMMENT_ENTRYPOINT}
     networks:
       - reddit
 
