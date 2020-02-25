@@ -10,6 +10,7 @@ build_job:
   stage: build
   script:
     - echo 'Building'
+    - apk add docker
     - docker build -t mamontov/pipeline-reddit:v1 -f docker-monolith/Dockerfile .
     - docker images
 
