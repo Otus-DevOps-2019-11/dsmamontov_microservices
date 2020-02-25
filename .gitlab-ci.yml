@@ -10,6 +10,7 @@ build_job:
   stage: build
   script:
     - echo 'Building'
+    - docker build -t mamontov/pipeline-reddit:v1 .
 
 test_unit_job:
   stage: test
@@ -60,4 +61,4 @@ branch review:
   only:
     - branches
   except:
-    - master 
+    - master
