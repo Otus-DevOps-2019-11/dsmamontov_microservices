@@ -11,7 +11,7 @@ build_job:
   script:
     - echo 'Building'
     - cd docker-monolith && ls -l
-    - docker build -t mamontov/pipeline-reddit:v1 -f docker-monolith/Dockerfile
+    - docker build -t mamontov/pipeline-reddit:v1 -f ./docker-monolith/Dockerfile
     - docker images
 
 test_unit_job:
