@@ -10,6 +10,7 @@ build_job:
   stage: build
   script:
     - echo 'Building'
+    - ls -l
     - docker build -t mamontov/pipeline-reddit:v1 .
 
 test_unit_job:
