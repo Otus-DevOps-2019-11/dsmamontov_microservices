@@ -10,7 +10,6 @@ build_job:
   stage: build
   script:
     - echo 'Building'
-    - cd docker-monolith && ls -l
     - docker build -t mamontov/pipeline-reddit:v1 -f docker-monolith/Dockerfile .
     - docker images
 
