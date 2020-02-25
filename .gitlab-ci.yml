@@ -10,7 +10,7 @@ build_job:
   stage: build
   script:
     - echo 'Building'
-    - ls -lah
+    - ls -lh
     - sudo docker build -t mamontov/pipeline-reddit:v1 -f docker-monolith/Dockerfile .
     - sudo docker images
   tags:
