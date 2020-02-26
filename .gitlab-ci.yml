@@ -42,9 +42,12 @@ staging:
     - /^\d+\.\d+\.\d+/
   script:
     - echo 'Deploy'
+    - sudo docker run -d --name stage-reddit mamontov/pipeline-reddit:v1
   environment:
     name: stage
     url: https://beta.example.com
+  tags:
+    - shell
 
 production:
   stage: production
@@ -53,9 +56,12 @@ production:
     - /^\d+\.\d+\.\d+/
   script:
     - echo 'Deploy'
+    - sudo docker run -d --name prod-reddit mamontov/pipeline-reddit:v1
   environment:
     name: production
     url: https://example.com
+  tags:
+    - shell
 
 branch review:
   stage: review
