@@ -1,5 +1,5 @@
 # dsmamontov_microservices
-dsmamontov microservices repositor y
+dsmamontov microservices repository
 
 
 # docker-4
