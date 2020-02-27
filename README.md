@@ -1,5 +1,12 @@
 # dsmamontov_microservices
-dsmamontov microservices repositor y
+dsmamontov microservices repository
+
+appuser@gitlab-ci:~$ sudo docker ps
+CONTAINER ID        IMAGE                         COMMAND                  CREATED             STATUS                 PORTS                                                            NAMES
+7e2edf4f0e38        mamontov/pipeline-reddit:v1   "/start.sh"              20 seconds ago      Up 19 seconds                                                                           prod-reddit
+998dc2a65bdf        mamontov/pipeline-reddit:v1   "/start.sh"              37 seconds ago      Up 36 seconds                                                                           stage-reddit
+1b0fd44711f8        gitlab/gitlab-runner:latest   "/usr/bin/dumb-init …"   8 hours ago         Up 8 hours                                                                              gitlab-runner
+0adeee8604c2        gitlab/gitlab-ce:latest       "/assets/wrapper"        9 hours ago         Up 9 hours (healthy)   0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp, 0.0.0.0:2222->22/tcp   gitlab_web_1
 
 
 # docker-4
