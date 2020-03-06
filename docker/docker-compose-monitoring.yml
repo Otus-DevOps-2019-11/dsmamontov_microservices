@@ -29,6 +29,13 @@ services:
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
 
+  alertmanager:
+    image: mamontov/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+    ports:
+      - 9093:9093
+
   mongodb-exporter:
     image: mamontov/mongodb-exporter 
     networks:
