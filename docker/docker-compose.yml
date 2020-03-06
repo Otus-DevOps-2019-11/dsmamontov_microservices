@@ -8,19 +8,19 @@ services:
       - reddit
   ui:
 #    build: ./ui
-    image: mamontov/ui:${VERSION}
+    image: mamontov/ui
     ports:
       - 9292:9292/tcp
     networks:
       - reddit
   post:
 #    build: ./post-py
-    image: mamontov/post:${VERSION}
+    image: mamontov/post
     networks:
       - reddit
   comment:
 #    build: ./comment
-    image: mamontov/comment:${VERSION}
+    image: mamontov/comment
     networks:
       - reddit
 
@@ -30,6 +30,7 @@ services:
       - '9090:9090'
     volumes:
       - prometheus_data:/prometheus
+      - ../monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -39,6 +40,8 @@ services:
 
   node-exporter:
     image: prom/node-exporter:v0.15.2
+    networks:
+      - reddit
     user: root
     volumes:
       - /proc:/host/proc:ro
@@ -50,16 +53,14 @@ services:
       - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
 
   mongodb-exporter:
-    build: ../monitoring/mongo_exporter
-    image: ${USERNAME}/mongodb_exporter:latest
+    image: mamontov/mongodb-exporter 
     networks:
       - reddit
     environment:
       MONGODB_URI: "post_db://post_db:27017"
 
   blackbox:
-    build: ../monitoring/blackbox_exporter
-    image: ${USERNAME}/blackbox_exporter
+    image: mamontov/blackbox_exporter
     networks:
       - reddit
 

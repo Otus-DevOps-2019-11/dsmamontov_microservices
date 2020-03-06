@@ -1,41 +1,39 @@
-USER_NAME = mamontov
+build-all: build-ui build-comment build-post build-prometheus build-blackbox-exporter build-mongodb-exporter
 
-docker-build-all: docker-build-ui docker-build-comment docker-build-post docker-build-prometheus docker-build-blackbox_exporter docker-build-mongodb_exporter docker-push-images
-
-docker-build-ui:
+build-ui:
 	cd ./src/ui && bash ./docker_build.sh
 
-docker-build-comment:
+build-comment:
 	cd ./src/comment && bash ./docker_build.sh
 
-docker-build-post:
+build-post:
 	cd ./src/post-py && bash ./docker_build.sh
 
-docker-build-blackbox_exporter:
-	cd ./monitoring/blackbox_exporter && docker build -t ${USER_NAME}/blackbox_exporter .
+build-blackbox-exporter:
+	cd ./monitoring/blackbox && docker build -t mamontov/blackbox_exporter .
 
-docker-build-mongodb_exporter:
-	cd ./monitoring/mongodb_exporter && docker build -t ${USER_NAME}/mongodb_exporter .
+build-mongodb-exporter:
+	cd ./monitoring/mongodb && docker build -t namontov/mongodb_exporter .
 
-docker-build-prometheus:
-	cd ./monitoring/prometheus && docker build -t ${USER_NAME}/prometheus .
+build-prometheus:
+	cd ./monitoring/prometheus && docker build -t mamontov/prometheus .
 
-docker-push-images: docker-ui-push docker-comment-push docker-post-push docker-blackbox_exporter-push docker-prometheus-push docker-mongodb_exporter-push
+push-all: ui-push comment-push post-push blackbox-exporter-push prometheus-push mongodb-exporter-push
 
-docker-ui-push:
-	docker push ${USER_NAME}/ui
+ui-push:
+	docker push mamontov/ui
 
-docker-comment-push:
-	docker push ${USER_NAME}/comment
+comment-push:
+	docker push mamontov/comment
 
-docker-post-push:
-	docker push ${USER_NAME}/post
+post-push:
+	docker push mamontov/post
 
-docker-blackbox_exporter-push:
-	docker push ${USER_NAME}/blackbox_exporter
+blackbox-exporter-push:
+	docker push mamontov/blackbox_exporter
 
-docker-mongodb_exporter-push:
-	docker push ${USER_NAME}/mongodb_exporter
+mongodb-exporter-push:
+	docker push mamontov/mongodb_exporter
 
-docker-prometheus-push:
-	docker push ${USER_NAME}/ui
+prometheus-push:
+	docker push mamontov/ui

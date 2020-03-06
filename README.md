@@ -1,6 +1,23 @@
 # dsmamontov_microservices
 dsmamontov microservices repository
 
+# monitoring
+
+собранные контейнеры:
+https://hub.docker.com/repository/docker/mamontov/mongodb-exporter
+https://hub.docker.com/repository/docker/mamontov/blackbox_exporter
+https://hub.docker.com/repository/docker/mamontov/prometheus
+https://hub.docker.com/repository/docker/mamontov/ui
+https://hub.docker.com/repository/docker/mamontov/post
+https://hub.docker.com/repository/docker/mamontov/comment
+
+написан makefile для сборки и заливки
+проект можно запустить так:
+
+docker-compose up -d
+
+# gitlab-ci-1
+
 appuser@gitlab-ci:~$ sudo docker ps
 CONTAINER ID        IMAGE                         COMMAND                  CREATED             STATUS                 PORTS                                                            NAMES
 7e2edf4f0e38        mamontov/pipeline-reddit:v1   "/start.sh"              20 seconds ago      Up 19 seconds                                                                           prod-reddit
