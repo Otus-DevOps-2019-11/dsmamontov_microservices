@@ -18,6 +18,9 @@ build-mongodb-exporter:
 build-prometheus:
 	cd ./monitoring/prometheus && docker build -t mamontov/prometheus .
 
+build-alertmanager:
+	cd ./monitoring/alertmanager && docker build -t mamontov/alertmanager .
+
 push-all: ui-push comment-push post-push blackbox-exporter-push prometheus-push mongodb-exporter-push
 
 ui-push:
@@ -37,3 +40,6 @@ mongodb-exporter-push:
 
 prometheus-push:
 	docker push mamontov/ui
+
+alertmanager-push:
+	docker push mamontov/alertmanager
