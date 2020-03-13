@@ -1,0 +1,110 @@
+version: '3.3'
+services:
+
+  prometheus:
+    image: mamontov/prometheus:v2
+    ports:
+      - '9090:9090'
+    volumes:
+      - prometheus_data:/prometheus
+      - ../monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d'
+    networks:
+      - reddit
+
+  node-exporter:
+    image: prom/node-exporter:v0.15.2
+    networks:
+      - reddit
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+
+  alertmanager:
+    image: mamontov/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+    ports:
+      - 9093:9093
+    networks:
+      - reddit
+
+  mongodb-exporter:
+    image: mamontov/mongodb-exporter 
+    networks:
+      - reddit
+    environment:
+      MONGODB_URI: "post_db://post_db:27017"
+
+  blackbox:
+    image: mamontov/blackbox_exporter
+    networks:
+      - reddit
+
+  cadvisor:
+    image: google/cadvisor:v0.29.0
+    networks:
+      - reddit
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:rw'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+    ports:
+      - '8080:8080'
+
+  telegraf:
+    image: telegraf
+    environment:
+      HOST_PROC: /rootfs/proc
+      HOST_SYS: /rootfs/sys
+      HOST_ETC: /rootfs/etc
+    volumes:
+     - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+     - /var/run/docker.sock:/var/run/docker.sock:ro
+     - /sys:/rootfs/sys:ro
+     - /proc:/rootfs/proc:ro
+     - /etc:/rootfs/etc:ro
+    networks:
+      - reddit
+
+  influxdb:
+    image: influxdb
+    ports:
+      - 8086:8086
+    volumes:
+      - influx_data:/var/lib/influxdb
+    restart:
+      always
+    networks:
+      - reddit
+
+  grafana:
+    image: grafana/grafana:5.0.0
+    networks:
+      - reddit
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+
+networks:
+  reddit:
+volumes:  
+  grafana_data:
+  prometheus_data:
+  influx_data:

@@ -1,7 +1,24 @@
 # dsmamontov_microservices
 dsmamontov microservices repository
 
-# monitoring
+# monitoring-2
+
+настроены дашборды и поднята графана с кадвизором
+
+канал с алертами в слак
+https://app.slack.com/client/T6HR0TUP3/CRY9VNJFP/details/apps
+
+настройки мониоринга докера daemon.json
+cadvisor как-то больше данных собирает
+
+для дашборда докер энжина использовал этот дашборд https://grafana.com/grafana/dashboards/1229
+
+для телеграфа поднят телеграф + инфлюкс дб
+дашборд использовал такой https://grafana.com/grafana/dashboards/1150
+
+картинка с алертом на почту в чате в слаке
+
+# monitoring-1
 
 собранные контейнеры:
 https://hub.docker.com/repository/docker/mamontov/mongodb-exporter
