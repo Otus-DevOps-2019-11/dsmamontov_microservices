@@ -7,15 +7,37 @@ services:
     networks:
       - reddit
   ui:
-#    build: ./ui
-    image: mamontov/ui
+    image: artemmkin/ui
+    environment:
+      -POST_SERVICE_HOST=post
+      -POST_SERVICE_PORT=5000
+      -COMMENT_SERVICE_HOST=comment
+      -COMMENT_SERVICE_PORT=9292
     ports:
-      - 9292:9292/tcp
+      -"9292:9292"
+    depends_on:
+      -post
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.ui
     networks:
       - reddit
   post:
-#    build: ./post-py
-    image: mamontov/post
+    image: ${USER_NAME}/post
+    environment:
+      - POST_DATABASE_HOST=post_db
+      - POST_DATABASE=posts
+    depends_on:
+      - post_db
+    ports:
+      - "5000:5000"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.post
     networks:
       - reddit
   comment:
