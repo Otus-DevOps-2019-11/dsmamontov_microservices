@@ -9,20 +9,20 @@ services:
       - reddit
 
   fluentd:
-    build: ./fluentd
+    build: ../logging/fluentd/
     ports:
       - "24224:24224"
       - "24224:24224/udp"
 
   elasticsearch:
-    image: elasticsearch
+    image: elasticsearch:6.8.3
     expose:
       - 9200
     ports:
       - "9200:9200"
 
   kibana:
-    image: kibana
+    image: kibana:6.8.3
     ports:
       - "8080:5601"
 
