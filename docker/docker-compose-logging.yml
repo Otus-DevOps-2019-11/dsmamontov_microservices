@@ -1,15 +1,14 @@
-version: '3'
+version: '3.3'
 
 services:
   zipkin:
     image: openzipkin/zipkin
     ports:
       - "9411:9411"
-    networks:
-      - reddit
 
   fluentd:
-    build: ../logging/fluentd/
+    #build: ../logging/fluentd/
+    image: mamontov/fluentd
     ports:
       - "24224:24224"
       - "24224:24224/udp"
@@ -26,5 +25,3 @@ services:
     ports:
       - "8080:5601"
 
-networks:
-  reddit:

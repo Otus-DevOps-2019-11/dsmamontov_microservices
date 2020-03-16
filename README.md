@@ -1,6 +1,11 @@
 # dsmamontov_microservices
 dsmamontov microservices repository
 
+# logging-1
+
+запуск стенда: docker-compose -f docker-compose-logging.yml -f docker-compose.yml down && docker-compose -f docker-compose-logging.yml -f docker-compose.yml up -d
+были развернуты: elk-стек, zipkin
+
 # monitoring-2
 
 настроены дашборды и поднята графана с кадвизором
