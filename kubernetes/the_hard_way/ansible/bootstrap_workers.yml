@@ -1,0 +1,126 @@
+- name: Bootstrapping a worker Cluster
+  hosts: workers
+  gather_facts: yes
+  tasks:
+
+    - name: install paks
+      apt:
+        pkg:
+        - socat
+        - conntrack
+        - ipset
+
+    - name: Disable SWAP
+      shell: swapoff -a
+
+    - name: create kubernetes folders
+      file:
+        path: "{{ item }}"
+        state: directory
+        recurse: yes
+        mode: '0755'
+      with_items:
+        - "/var/lib/kubernetes/"
+        - "/etc/cni/net.d"
+        - "/opt/cni/bin"
+        - "/var/lib/kubelet"
+        - "/var/lib/kube-proxy"
+        - "/var/run/kubernetes"
+        - "/etc/containerd/"
+
+    - name: Download k8s binares
+      get_url:
+        url: "{{ item }}"
+        dest: /bin/
+        mode: '0755'
+      with_items:
+        - "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubelet"
+        - "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-proxy"
+        - "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl"
+
+    - name: Download k8s arhives
+      get_url:
+        url: "{{ item }}"
+        dest: /tmp/
+        mode: '0755'
+      with_items:
+        - "https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.15.0/crictl-v1.15.0-linux-amd64.tar.gz"
+        - "https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-linux-amd64-v0.8.2.tgz"
+        - "https://github.com/containerd/containerd/releases/download/v1.2.9/containerd-1.2.9.linux-amd64.tar.gz"
+        - "https://github.com/opencontainers/runc/releases/download/v1.0.0-rc8/runc.amd64"
+
+    - name: Unarchive crictl-v1.15.0-linux-amd64.tar.gz
+      unarchive:
+        src: /tmp/crictl-v1.15.0-linux-amd64.tar.gz
+        dest: /opt/cni/bin/
+        remote_src: yes
+        mode: "+x"
+
+    - name: mv runc.amd64
+      shell: sudo mv /tmp/runc.amd64 /bin/runc
+
+    - name: Unarchive ni-plugins-linux-amd64-v0.8.2.tgz
+      unarchive:
+        src: /tmp/ni-plugins-linux-amd64-v0.8.2.tgz
+        dest: /opt/cni/bin/
+        remote_src: yes
+        mode: "+x"
+
+    - name: Unarchive containerd-1.2.9.linux-amd64.tar.gz
+      unarchive:
+        src: /tmp/containerd-1.2.9.linux-amd64.tar.gz
+        dest: /bin/containerd
+        remote_src: yes
+        mode: "+x"
+
+    - name: add cni confs
+      copy:
+        src: "{{ item }}"
+        dest: /etc/cni/net.d/
+      with_items:
+        - ../10-bridge.conf
+        - ../99-loopback.conf
+
+    - name: add containerd confs
+      copy:
+        src: "{{ item }}"
+        dest: /etc/containerd/
+      with_items:
+        - ../config.toml
+
+    - name: add unit files
+      copy:
+        src: "{{ item }}"
+        dest: /etc/systemd/system/
+      with_items:
+        - ../containerd.service
+        - ../kubelet.service
+        - ../kube-proxy.service
+
+    - name: Configure the Kubelet pems
+      copy:
+        src: "{{ item }}"
+        dest: /var/lib/kubelet/
+      with_items:
+        - ../"{{ vmname }}"-key.pem
+        - ../"{{ vmname }}".pem
+
+    - name: Configure kubeconfig
+      copy:
+        src: ../"{{ vmname }}".kubeconfig
+        dest: /var/lib/kubelet/kubeconfig
+
+    - name: Configure ca.pem
+      copy:
+        src: ../ca.pem
+        dest: /var/lib/kubernetes/
+
+    - name: restart servises
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: "{{ item }}"
+      with_items:
+        - containerd
+        - kubelet
+        - kube-proxy

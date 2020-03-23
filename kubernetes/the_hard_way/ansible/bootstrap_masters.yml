@@ -1,0 +1,65 @@
+- name: Bootstrapping a master Cluster
+  hosts: workers
+  gather_facts: yes
+  tasks:
+
+    - name: create kubernetes folders
+      file:
+        path: "{{ item }}"
+        state: directory
+        recurse: yes
+        mode: '0755'
+      with_items:
+        - "/etc/kubernetes/config"
+        - "/var/lib/kubernetes/"
+        - "/var/lib/kubelet"
+        - "/var/lib/kube-proxy"
+        - "/var/run/kubernetes"
+
+    - name: Download k8s binares
+      get_url:
+        url: "{{ item }}"
+        dest: /bin/
+        mode: '0755'
+      with_items:
+        - "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-apiserver"
+        - "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-controller-manager"
+        - "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-scheduler"
+        - "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl"
+
+    - name: add pems
+      copy:
+        src: "{{ item }}"
+        dest: /var/lib/kubernetes/
+      with_items:
+        - ../ca.pem
+        - ../ca-key.pem
+        - ../kubernetes-key.pem
+        - ../kubernetes.pem
+        - ../service-account-key.pem
+        - ../service-account.pem
+        - ../encryption-config.yaml
+
+    - name: add config scheduller
+      copy:
+        src: ../kube-scheduler.yaml
+        dest: /var/lib/kubernetes/
+
+    - name: add unit files
+      copy:
+        src: "{{ item }}"
+        dest: /etc/systemd/system/
+      with_items:
+        - ../kube-apiserver.service
+        - ../kube-controller-manager.service
+        - ../kube-scheduler.service
+
+    - name: restart servises
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: "{{ item }}"
+      with_items:
+        - kube-apiserver
+        - kube-controller-manager
+        - kube-scheduler

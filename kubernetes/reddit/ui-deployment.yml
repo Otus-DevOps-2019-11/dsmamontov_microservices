@@ -15,14 +15,16 @@ spec:
         app: ui
     spec:
       containers:
-        image: artemmkin/ui
-        environment:
-          - POST_SERVICE_HOST=post
-          - POST_SERVICE_PORT=5000
-          - COMMENT_SERVICE_HOST=comment
-          - COMMENT_SERVICE_PORT=9292
-        ports:
-          - "9292:9292"
-        depends_on:
-          - post
+      - image: artemmkin/ui
         name: ui
+        ports:
+        - containerPort: 9292
+        env:
+        - name: POST_SERVICE_HOST
+          value: "post"
+        - name: POST_SERVICE_PORT
+          value: "5000"
+        - name: COMMENT_SERVICE_HOST
+          value: "comment"
+        - name: COMMENT_SERVICE_PORT
+          value: "9292"
