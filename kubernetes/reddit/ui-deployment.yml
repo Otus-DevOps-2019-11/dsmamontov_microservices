@@ -1,4 +1,5 @@
-# /labels:\n\s+app:\sreddit\n\s+component:\sui/
+/labels:\n\s+app:\sreddit\n\s+component:\sui/
+
 ---
   apiVersion: apps/v1
   kind: Deployment
