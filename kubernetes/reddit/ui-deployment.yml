@@ -4,7 +4,7 @@
   metadata:
     name: ui
     labels:
-      app: reddit
+    - app: reddit
       component: ui
   spec:
     replicas: 3
