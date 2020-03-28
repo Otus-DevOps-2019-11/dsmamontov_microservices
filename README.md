@@ -1,6 +1,17 @@
 # dsmamontov_microservices
 dsmamontov microservices repository
 
+# kubernetes-2
+скриншот рабочего приложения в кубере
+https://app.slack.com/client/T6HR0TUP3/CRY9VNJFP
+
+запустить приложение можно так:
+kubectl apply -f ./ -n dev
+
+создать кластер терраформом так:
+ gcloud auth application-default login
+ terraform plan
+
 # kubernetes-1
 
 продйен путь установки кубернетиса хард вей.
