@@ -1,6 +1,12 @@
 # dsmamontov_microservices
 dsmamontov microservices repository
 
+# kubernetes-1
+
+продйен путь установки кубернетиса хард вей.
+настроены три матер ноды и тьри воркер, так же настроен кластер etcd
+запущены делоименты приложения реддит
+
 # logging-1
 
 запуск стенда: docker-compose -f docker-compose-logging.yml -f docker-compose.yml down && docker-compose -f docker-compose-logging.yml -f docker-compose.yml up -d
