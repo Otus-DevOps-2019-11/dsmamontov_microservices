@@ -1,6 +1,13 @@
 # dsmamontov_microservices
 dsmamontov microservices repository
 
+# kubernetes-3
+
+были настроены локальный кластер миникуба и кластер кубернетеса в гугл-облаке
+настроены ингресс контроллеры, сетевые политики и сторадж классы
+
+приложуха, если ещё жив кластер: https://34.102.220.39/
+
 # kubernetes-2
 скриншот рабочего приложения в кубере
 https://app.slack.com/client/T6HR0TUP3/CRY9VNJFP
