@@ -43,7 +43,7 @@ helm tiller run helm upgrade \
   "$name" \
   reddit-deploy/reddit/
 
-задание со звёздочкой
+задание со звёздочкой:
 настроен хук для запуска деплоя при билде
 curl -X POST \
      -F token=$REDDIT_TOKEN \
