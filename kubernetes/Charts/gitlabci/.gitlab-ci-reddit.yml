@@ -1,0 +1,81 @@
+image: alpine:latest
+
+stages:
+  - test
+  - staging
+  - production
+
+test:
+  stage: test
+  script:
+    - exit 0
+  only:
+    - branches
+
+deploy release: &deploy
+  stage: production
+  variables:
+    KUBE_NAMESPACE: production
+    name: "$CI_ENVIRONMENT_SLUG"
+  environment:
+    name: production
+    url: http://production
+  before_script:
+    # install_dependencies
+    - apk add -U openssl curl tar gzip bash ca-certificates git
+    - wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+    - wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.23-r3/glibc-2.23-r3.apk
+    - apk add glibc-2.23-r3.apk
+    - rm glibc-2.23-r3.apk
+    - curl https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz | tar zx
+    - mv linux-amd64/helm /usr/bin/
+    - helm version --client
+    - curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x /usr/bin/kubectl
+    - kubectl version --client
+    # ensure_namespace
+    - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+  script:
+    - echo $KUBE_NAMESPACE
+    - echo $CI_PROJECT_NAMESPACE
+    - curl http://gitlab-gitlab/$CI_PROJECT_NAMESPACE/ui/raw/master/VERSION
+    - curl http://gitlab-gitlab/$CI_PROJECT_NAMESPACE/post/raw/master/VERSION
+    - curl http://gitlab-gitlab/$CI_PROJECT_NAMESPACE/comment/raw/master/VERSION
+    - export track="${1-stable}"
+    - echo "Clone deploy repository..."
+    - git clone http://gitlab-gitlab/$CI_PROJECT_NAMESPACE/reddit-deploy.git
+    - echo "Download helm dependencies..."
+    - helm dep update reddit-deploy/reddit
+    - echo "Deploy helm release $name to $KUBE_NAMESPACE"
+    - echo "Upgrading existing release..."
+    - >
+      helm upgrade --install --force --namespace="$KUBE_NAMESPACE" \
+        --set ui.ingress.host="$host" \
+        --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
+        --set ui.image.tag="$(curl http://gitlab-gitlab/$CI_PROJECT_NAMESPACE/ui/raw/master/VERSION)" \
+        --set post.image.tag="$(curl http://gitlab-gitlab/$CI_PROJECT_NAMESPACE/post/raw/master/VERSION)" \
+        --set comment.image.tag="$(curl http://gitlab-gitlab/$CI_PROJECT_NAMESPACE/comment/raw/master/VERSION)" \
+        "$name" \
+        reddit
+
+stage:
+  <<: *deploy
+  stage: staging
+  variables:
+    KUBE_NAMESPACE: staging
+    name: "$CI_ENVIRONMENT_SLUG"
+  environment:
+    name: staging
+    url: http://staging
+  only:
+    refs:
+      - master
+    kubernetes: active
+
+production:
+  <<: *deploy
+  only:
+    refs:
+      - master
+    kubernetes: active
+  when: manual

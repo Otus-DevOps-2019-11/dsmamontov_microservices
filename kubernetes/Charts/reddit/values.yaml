@@ -1,0 +1,20 @@
+comment:
+  image:
+    repository: mamontov/comment
+    tag: latest
+  service:
+    externalPort: 9292
+
+post:
+  image:
+    repository: mamontov/post
+    tag: latest
+  service:
+    externalPort: 5000
+
+ui:
+  image:
+    repository: mamontov/ui
+    tag: latest
+  service:
+    externalPort: 9292

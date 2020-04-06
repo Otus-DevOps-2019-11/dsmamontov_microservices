@@ -1,6 +1,59 @@
 # dsmamontov_microservices
 dsmamontov microservices repository
 
+# kubernetes-4
+
+настроены пайплайны деплоя хельм-чартов в кубернетес через:
+
+helm2
+вместо helm init --upgrade надо использовать
+helm init --force-upgrade
+у меня только так заработало
+
+helm upgrade \
+  --install \
+  --wait \
+  --set ui.ingress.host="$host" \
+  --set $CI_PROJECT_NAME.image.tag="$CI_APPLICATION_TAG" \
+  --namespace="$KUBE_NAMESPACE" \
+  --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
+  "$name" \
+  reddit-deploy/reddit/
+
+helm3
+helm upgrade \
+  --install \
+  --wait \
+  --set ui.ingress.host="$host" \
+  --set $CI_PROJECT_NAME.image.tag=$CI_APPLICATION_TAG \
+  --namespace="$KUBE_NAMESPACE" \
+  --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
+  "$name" \
+  reddit-deploy/reddit/
+
+
+helm2 без tiller
+helm tiller run helm upgrade \
+  --install \
+  --wait \
+  --set ui.ingress.host="$host" \
+  --set $CI_PROJECT_NAME.image.tag=$CI_APPLICATION_TAG \
+  --namespace="$KUBE_NAMESPACE" \
+  --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
+  "$name" \
+  reddit-deploy/reddit/
+
+задание со звёздочкой:
+настроен хук для запуска деплоя при билде
+curl -X POST \
+     -F token=$REDDIT_TOKEN \
+     -F ref=master \
+     http://gitlab-gitlab/api/v4/projects/$REDDIT_PROJECT_ID/trigger/pipeline
+
+ps. как-то сложно задание шло. гит постоянно сваливался
+Error from server (BadRequest): container "gitlab" in pod "gitlab-gitlab-57c7d6cb74-jnvjv" is not available
+¯\_(ツ)_/¯
+
 # kubernetes-3
 
 были настроены локальный кластер миникуба и кластер кубернетеса в гугл-облаке
