@@ -72,6 +72,7 @@ kubectl apply -f ./ -n dev
  gcloud auth application-default login
  terraform plan
 
+
 # kubernetes-1
 
 продйен путь установки кубернетиса хард вей.
