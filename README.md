@@ -12,7 +12,6 @@ kubectl apply -f ./ -n dev
  gcloud auth application-default login
  terraform plan
 
-дубль 2
 
 # kubernetes-1
 
